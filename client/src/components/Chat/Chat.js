@@ -7,6 +7,9 @@ let socket;
 const Chat = ({location}) => {
     const [name, setName] = useState('');
     const [room, setRoom] = useState('');
+    // array of messages
+    const [message, setMessage] = useState('');
+    const [messages, setMessages] = useState([]);
     const ENDPOINT = 'localhost:5000';
 
     useEffect(() => {
@@ -34,8 +37,34 @@ const Chat = ({location}) => {
         
     },[ENDPOINT, location.search]); // it will only be re-rendered only when these two values change
 
+
+    // UseEffect for handling messages
+    useEffect(() => {
+        socket.on('message',(message) => {
+            // push the message to the messages array
+            setMessages([...messages, message])
+        })
+    },[messages]); // when messages array changes
+
+    // function for sending messages
+    const sendMessage = (event) => {
+        // we do not want page refresh wen a user clicks a button
+        event.preventDefault();
+
+        if(message) {
+            socket.emit('sendMessage', message, () => setMessage(''))
+        }
+    }
+
+    console.log(message, messages);
+
     return (
-        <h1>Chat</h1>
+        <div className="outerContainer">
+            <div className="container">
+                <input value={message} onChange={(event) => setMessage(event.target.value)} 
+                        onKeyPress={event => event.key === 'Enter' ? sendMessage(event) : null } />
+            </div>
+        </div>
     );
 }
 export default Chat;
