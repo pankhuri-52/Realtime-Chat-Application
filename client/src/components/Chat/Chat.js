@@ -21,7 +21,17 @@ const Chat = ({location}) => {
         setName(name);
         setRoom(room);
 
-        socket.emit('join' , {name, room});
+        socket.emit('join' , {name, room}, () => {
+            // this callback fn will get executed when the callback from index.js in the backend will be executed
+           
+        });
+
+        //disconnect effect ( i.e. it will be executed on unmounting)
+        return() => {
+            socket.emit('disconnect');
+            socket.off();
+        }
+        
     },[ENDPOINT, location.search]); // it will only be re-rendered only when these two values change
 
     return (

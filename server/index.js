@@ -16,6 +16,11 @@ const io = socketio(server);
 // this socket is going to be connect as a  client side socket
 io.on('connection',(socket) => {
     console.log('We have a new connection');
+    
+    // we got this data from chat.js in the chat folder from the frontend part
+    socket.on('join',({ name, room }, callback) => {
+        console.log(name,room);
+    });
 
     socket.on('disconnect',() => {
         console.log('User had left');
