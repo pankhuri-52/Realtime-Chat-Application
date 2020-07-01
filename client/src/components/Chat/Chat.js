@@ -2,6 +2,7 @@ import React,{useState, useEffect} from 'react';
 import queryString from 'query-string'; //this will help retrieving data from the url
 import io from 'socket.io-client'; 
 import InfoBar from '../InfoBar/InfoBar';
+import Input from '../Input/Input';
 
 import './Chat.css';
 
@@ -65,8 +66,7 @@ const Chat = ({location}) => {
         <div className="outerContainer">
             <div className="container">
                 <InfoBar room={room} />
-                {/* <input value={message} onChange={(event) => setMessage(event.target.value)} 
-                        onKeyPress={event => event.key === 'Enter' ? sendMessage(event) : null } /> */}
+                <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
             </div>
         </div>
     );
