@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import InfoBar from '../InfoBar/InfoBar';
 import Input from '../Input/Input';
 import Messages from '../Messages/Messages';
+import TextContainer from '../TextContainer/TextContainer';
 
 import './Chat.css';
 
@@ -12,6 +13,7 @@ let socket;
 const Chat = ({location}) => {
     const [name, setName] = useState('');
     const [room, setRoom] = useState('');
+    const [users, setUsers] = useState('');
     // array of messages
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
@@ -29,9 +31,11 @@ const Chat = ({location}) => {
         setName(name);
         setRoom(room);
 
-        socket.emit('join' , {name, room}, () => {
+        socket.emit('join' , {name, room}, (error) => {
             // this callback fn will get executed when the callback from index.js in the backend will be executed
-           
+            if(error) {
+                alert(error);
+              }
         });
 
         //disconnect effect ( i.e. it will be executed on unmounting)
@@ -49,6 +53,11 @@ const Chat = ({location}) => {
             // push the message to the messages array
             setMessages([...messages, message])
         })
+
+        socket.on("roomData", ({ users }) => {
+            setUsers(users);
+        });
+
     },[messages]); // when messages array changes
 
     // function for sending messages
@@ -70,6 +79,7 @@ const Chat = ({location}) => {
                 <Messages messages={messages} name={name} />
                 <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
             </div>
+            <TextContainer users={users} />
         </div>
     );
 }
